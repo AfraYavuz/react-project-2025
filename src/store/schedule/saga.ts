@@ -1,22 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import type { AxiosResponse } from 'axios';
-import type { Action } from 'redux-actions';
+import type { AxiosResponse } from "axios";
+import type { Action } from "redux-actions";
 
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery } from "redux-saga/effects";
 
-import types from './types';
-import Logger from '../../utils/logger';
-import * as actions from './actions';
-import { updateProgress } from '../ui/actions';
+import types from "./types";
+import Logger from "../../utils/logger";
+import * as actions from "./actions";
+import { updateProgress } from "../ui/actions";
 
-import type { Callbacks } from '../../utils/types';
-import { scheduleReponse } from '../../constants/api';
+import type { Callbacks } from "../../utils/types";
+import { scheduleReponse } from "../../constants/api";
 
 function* asyncFetchSchedule({
   payload: { onSuccess, onError } = {},
-}: Action<
-  Callbacks
->) {
+}: Action<Callbacks>) {
   yield put(updateProgress());
   try {
     const response = scheduleReponse;
@@ -33,8 +31,6 @@ function* asyncFetchSchedule({
   }
 }
 
-const scheduleSagas = [
-  takeEvery(types.FETCH_SCHEDULE, asyncFetchSchedule),
-];
+const scheduleSagas = [takeEvery(types.FETCH_SCHEDULE, asyncFetchSchedule)];
 
 export default scheduleSagas;

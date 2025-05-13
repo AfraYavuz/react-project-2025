@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
-import uiReducer from './ui';
-import scheduleReducer from './schedule';
-import authReducer from './auth';
+import uiReducer from "./ui";
+import scheduleReducer from "./schedule";
+import authReducer from "./auth";
 
-import type { UiState } from './ui';
-import type { AuthState } from './auth';
-import type { ScheduleState } from './schedule';
+import type { UiState } from "./ui";
+import type { AuthState } from "./auth";
+import type { ScheduleState } from "./schedule";
 
 interface RootStateInstance {
   ui: UiState;
@@ -33,7 +33,7 @@ const initialState = appReducer(
 );
 
 const rootReducer: typeof appReducer = (state: any, action: any) => {
-  if (action.type === 'SIGNIN') {
+  if (action.type === "SIGNIN") {
     state = initialState;
   }
   return appReducer(state, action);

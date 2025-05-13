@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import type { ScheduleInstance } from "../../models/schedule";
 import type { UserInstance } from "../../models/user";
@@ -21,6 +22,7 @@ import utc from "dayjs/plugin/utc";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import ReactModal from "react-modal";
+import { updateAssignmentDate } from "../../store/schedule/actions";
 
 dayjs.extend(utc);
 dayjs.extend(isSameOrBefore);
@@ -96,6 +98,7 @@ const modalStyles = {
 
 const CalendarContainer = ({ schedule, auth }: CalendarContainerProps) => {
   const calendarRef = useRef<FullCalendar>(null);
+  const dispatch = useDispatch();
 
   const [events, setEvents] = useState<EventInput[]>([]);
   const [highlightedDates, setHighlightedDates] = useState<string[]>([]);
@@ -222,7 +225,7 @@ const CalendarContainer = ({ schedule, auth }: CalendarContainerProps) => {
 
   useEffect(() => {
     generateStaffBasedCalendar();
-  }, [selectedStaffId]);
+  }, [selectedStaffId, schedule.assignments]);
 
   const RenderEventContent = ({ eventInfo }: any) => {
     return (
@@ -265,6 +268,7 @@ const CalendarContainer = ({ schedule, auth }: CalendarContainerProps) => {
           selectable={true}
           editable={true}
           eventOverlap={true}
+          eventStartEditable={true}
           eventDurationEditable={false}
           initialView="dayGridMonth"
           initialDate={initialDate}
@@ -279,6 +283,24 @@ const CalendarContainer = ({ schedule, auth }: CalendarContainerProps) => {
           eventClick={(info: any) => {
             setSelectedEvent(info.event);
             setModalIsOpen(true);
+          }}
+          eventDrop={(info: any) => {
+            const eventId = info.event.id;
+            const newDate = dayjs(info.event.start).format("YYYY-MM-DD");
+
+            const currentAssignment = getAssigmentById(eventId);
+            const originalDate = dayjs(currentAssignment?.shiftStart).format(
+              "YYYY-MM-DD"
+            );
+
+            if (newDate !== originalDate) {
+              dispatch(
+                updateAssignmentDate({
+                  id: eventId,
+                  newDate,
+                })
+              );
+            }
           }}
           datesSet={(info: any) => {
             //Aşağı kısımı silersek Takvim yine ilk etkinlik ayından başlayacak, kullanıcı istediği gibi ileri/geri gidebilecek.Silmediğimiz zaman etkinlik zamanından sonraki aya geçiş yapılamıyor

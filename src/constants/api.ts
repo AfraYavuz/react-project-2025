@@ -978,7 +978,7 @@ export const profileResponse = {
     ],
     role: {
       id: 1,
-      name: "Admin"
+      name: "Admin",
     },
     currentDepartmentId: "62034eb7-02c6-491a-9ae2-7449ff72df6a",
     language: "en",

@@ -1,23 +1,24 @@
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  exp: number;
+  [key: string]: unknown;
+}
 
 class JWTToken {
-  static getDecodeToken(token: string) {
-    return jwt_decode(token);
+  static getDecodeToken(token: string): DecodedToken {
+    return jwtDecode<DecodedToken>(token);
   }
 
-  static getExpiryTime(token: string) {
-    var jwt: any = jwt_decode(token);
+  static getExpiryTime(token: string): number {
+    const jwt = jwtDecode<DecodedToken>(token);
     return jwt.exp;
   }
 
   static isTokenExpired(token: string): boolean {
-    var jwt: any = jwt_decode(token);
-    const expiryTime: any = jwt.exp;
-    if (expiryTime) {
-      return 1000 * expiryTime - new Date().getTime() < 5000;
-    } else {
-      return false;
-    }
+    const jwt = jwtDecode<DecodedToken>(token);
+    const expiryTime = jwt.exp;
+    return 1000 * expiryTime - new Date().getTime() < 5000;
   }
 }
 
